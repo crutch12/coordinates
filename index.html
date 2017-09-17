@@ -27,13 +27,12 @@
 	<script src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.js"></script>
   </head>
   <body>
-    <h3>Правая кнопка - создать маркер. Левой кнопкой по маркеру - удалить маркер</h3>
+    <h3>Левая кнопка - создать маркер. Левой кнопкой по маркеру - удалить маркер</h3>
     <div id="map"></div>
     <button id="print" onclick="print()">Создать txt, чтобы из него скопировать в excel</button>
     <script>
 		var map;
 		var markers = [];
-		var num = 0;
 
 		function initMap() {
 			  
@@ -43,7 +42,7 @@
 				zoom: 3
 			});
 
-			map.addListener('rightclick', function(click) {
+			map.addListener('click', function(click) {
 			
 			var icon = {
 			    url: "icon.png", // url
@@ -53,12 +52,11 @@
 			var marker = new google.maps.Marker({
 			    position: click.latLng,
 			    map: map,
-			    title: '' + num,
+			    title: '' + markers.length,
 			    icon: icon
 			  });
 			
 			markers.push(marker);
-			num++;
 
 			marker.addListener('click', function(click) {
 				markers = _.remove(markers, function (obj) {
