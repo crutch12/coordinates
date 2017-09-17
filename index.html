@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Выбрать мышкой координаты</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+		h1 {
+			/*height: 15%;*/
+			margin: 0;
+			padding: 0;
+		}
+		#map {
+			height: 90%;
+			margin: 0;
+			padding: 0;
+		}
+
+		#print {
+			height: 10%;
+			width: 100%;
+			margin: 0;
+			padding: 0;
+		}
+		html, body {
+			height: 95%;
+			margin: 0;
+			padding: 0;
+		}
+    </style>
+    <script src="https://cdn.jsdelivr.net/lodash/4.10.0/lodash.js"></script>
+	<script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+  </head>
+  <body>
+    <h3>Правая кнопка - создать маркер. Левой кнопкой по маркеру - удалить маркер</h3>
+    <div id="map"></div>
+    <button id="print" onclick="print()">Создать txt, чтобы из него скопировать в excel</button>
+    <script>
+		var map;
+		var markers = [];
+		var num = 0;
+
+		function initMap() {
+			  
+			var myLatlng = {lat: 50, lng: 50};
+				map = new google.maps.Map(document.getElementById('map'), {
+				center: myLatlng,
+				zoom: 3
+			});
+
+			map.addListener('rightclick', function(click) {
+			
+			var icon = {
+			    url: "icon.png", // url
+			    scaledSize: new google.maps.Size(25, 25), // scaled size
+			};
+
+			var marker = new google.maps.Marker({
+			    position: click.latLng,
+			    map: map,
+			    title: '' + num,
+			    icon: icon
+			  });
+			
+			markers.push(marker);
+			num++;
+
+			marker.addListener('click', function(click) {
+				markers = _.remove(markers, function (obj) {
+					return obj.title != marker.title
+				});
+				marker.setMap(null);
+			});
+		  });
+		}
+
+		function print() {
+			var string = '';
+			string += 'Coordinates \r\n'
+			for (mark of markers) {
+				var latLng = mark.position.lat().toFixed(2) + '\t' + mark.position.lng().toFixed(2) + '\r\n';
+				string += latLng;
+			}
+
+			var blob = new Blob([string], {type: "text/plain;charset=utf-8"});
+			saveAs(blob, "testfile1.txt");
+		}
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIAkjmMU2lcspjCu4E29XCY8QzMPUY7wI&callback=initMap"
+    async defer></script>
+
+  </body>
+</html>
