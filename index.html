@@ -73,6 +73,7 @@
 			
 			for (mark of markers) {
 				var latLng = mark.position.lat().toFixed(2) + '\t' + mark.position.lng().toFixed(2) + '\r\n';
+				latLng = latLng.replace(/\./g, ',')
 				string += latLng;
 			}
 
